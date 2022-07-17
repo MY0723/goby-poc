@@ -1,0 +1,62 @@
+{
+      "Name": "Consul Rexec RCE",
+      "Level": "3",
+      "Tags": [
+            "rce"
+      ],
+      "GobyQuery": "protocol=\"consul(http)\"",
+      "Description": "Under a specific configuration, a malicious attacker can remotely execute commands on the Consul server without authorization by sending a carefully constructed HTTP request",
+      "Product": "Consul",
+      "Homepage": "https://www.consul.io/",
+      "Author": "aetkrad",
+      "Impact": "",
+      "Recommendation": "",
+      "References": [
+            "https://www.exploit-db.com/exploits/46073"
+      ],
+      "HasExp": false,
+      "ExpParams": null,
+      "ExpTips": {
+            "Type": "",
+            "Content": ""
+      },
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/v1/agent/self",
+                        "follow_redirect": false,
+                        "header": null,
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "\"DisableRemoteExec\":false",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|"
+                  ]
+            }
+      ],
+      "PostTime": "2021-11-08 21:46:25",
+      "GobyVersion": "1.8.302"
+}

