@@ -1,0 +1,69 @@
+{
+      "Name": "YAPI RCE",
+      "Level": "3",
+      "Tags": [
+            "rce"
+      ],
+      "GobyQuery": "(app=\"YAPI\" | title==\"YApi-高效、易用、功能强大的可视化接口管理平台\" | title==\"YApi Pro-高效、易用、功能强大的可视化接口管理平台\")",
+      "Description": "YAPI是由去哪儿网移动架构组(简称YMFE，一群由FE、iOS和Android工程师共同组成的最具想象力、创造力和影响力的大前端团队)开发的可视化接口管理工具，是一个可本地部署的、打通前后端及QA的接口管理平台。YAPI发布在公网且开发注册，会导致攻击者注册后执行任意命令。",
+      "Product": "YAPI",
+      "Homepage": "https://github.com/YMFE/yapi",
+      "Author": "aetkrad",
+      "Impact": "",
+      "Recommendation": "",
+      "References": [
+            "https://mp.weixin.qq.com/s/zobag3-fIl_0vrc8BrnRjg"
+      ],
+      "HasExp": false,
+      "ExpParams": null,
+      "ExpTips": {
+            "Type": "",
+            "Content": ""
+      },
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "POST",
+                        "uri": "/api/user/reg",
+                        "follow_redirect": false,
+                        "header": null,
+                        "data_type": "text",
+                        "data": "",
+                        "set_variable": []
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$code",
+                                    "operation": "==",
+                                    "value": "200",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "not contains",
+                                    "value": "禁止注册，请联系管理员",
+                                    "bz": ""
+                              },
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "邮箱不能为空",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+                        "output|lastbody|regex|"
+                  ]
+            }
+      ],
+      "PostTime": "2021-12-01 20:34:40",
+      "GobyVersion": "1.9.310"
+}
