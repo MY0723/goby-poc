@@ -1,0 +1,44 @@
+{
+      "Name": "极通EWEBSphpinfo泄露",
+      "Level": "3",
+      "Tags": [],
+      "GobyQuery": "body=\"极通软件\"",
+      "Description": "",
+      "Product": "",
+      "Homepage": "https://gobies.org/",
+      "Author": "gobysec@gmail.com",
+      "Impact": "",
+      "Recommandation": "",
+      "References": [
+            "https://gobies.org/"
+      ],
+      "ScanSteps": [
+            "AND",
+            {
+                  "Request": {
+                        "method": "GET",
+                        "uri": "/testweb.php",
+                        "follow_redirect": false,
+                        "header": {},
+                        "data_type": "text",
+                        "data": ""
+                  },
+                  "ResponseTest": {
+                        "type": "group",
+                        "operation": "AND",
+                        "checks": [
+                              {
+                                    "type": "item",
+                                    "variable": "$body",
+                                    "operation": "contains",
+                                    "value": "PHP Version",
+                                    "bz": ""
+                              }
+                        ]
+                  },
+                  "SetVariable": []
+            }
+      ],
+      "PostTime": "2021-06-17 21:19:12",
+      "GobyVersion": "1.8.268"
+}
