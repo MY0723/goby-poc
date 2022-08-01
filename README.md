@@ -6,6 +6,8 @@
 
 Goby POC 仅仅只供对已授权的目标使用测试，对未授权目标的测试，本库不承担责任，均由使用者自行承担
 
+[![HitCount](https://hits.dwyl.com/MY0723 /MY0723/goby-poc.svg?style=flat-square)](http://hits.dwyl.com/MY0723 /MY0723/goby-poc)
+
 ## Star上升曲线
 
 [![Stargazers over time](https://starchart.cc/MY0723/goby-poc.svg)](https://starchart.cc/MY0723/goby-poc)
