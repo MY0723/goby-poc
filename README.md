@@ -1,6 +1,6 @@
 # goby-poc
 #   声明
-包含447个自定义goby-poc，可能会有重复自行判断，如果无红队版，可直接poc管理处导入自定义poc即可，共计745个。
+包含447个自定义goby-poc，是否含有后门和重复自行判断，如果无红队版，可直接poc管理处导入自定义poc即可，共计745个。
 ![图片](https://user-images.githubusercontent.com/74171727/185719401-f4782b47-157b-48db-87df-955a65adc487.png)
 
 
